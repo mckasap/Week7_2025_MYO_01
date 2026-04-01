@@ -5,8 +5,10 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -93,20 +95,38 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+String Cevap="";
 
 public void BastanBasla() throws ExecutionException, InterruptedException {
-    Random rnd= new Random();
+    Random rnd= new Random(System.currentTimeMillis());
     int randomIndex=rnd.nextInt(120);
 
     myImageDownloader myImageDownloader= new myImageDownloader();
     Bitmap bitmap=myImageDownloader.execute(imgSrc[randomIndex]).get();
     ImageView imageView=findViewById(R.id.imageView);
     imageView.setImageBitmap(bitmap);
+    Cevap=authorName[randomIndex];
+    int answer=rnd.nextInt(4);
 
-    btns[0].setText(authorName[randomIndex]);
-    btns[1].setText(authorName[randomIndex]);
-    btns[2].setText(authorName[randomIndex]);
-    btns[3].setText(authorName[randomIndex]);
+
+    btns[answer].setText(authorName[randomIndex]);
+
+    for (int i=0;i<4;i++){
+        int myRandom=rnd.nextInt(120);
+
+        if (i!=answer){
+            for (int j=0;j<4;j++){
+                if (btns[j].getText().equals(authorName[myRandom])){
+                    myRandom=rnd.nextInt(120);
+                    j=0;
+                }
+
+            }
+            btns[i].setText(authorName[myRandom]);
+        }
+    }
+
+
 
 
 
@@ -119,7 +139,18 @@ public void BastanBasla() throws ExecutionException, InterruptedException {
     Button btn4;
     Button[] btns;
 
+ public void Tiklandi(View view) throws ExecutionException, InterruptedException {
+     Button btn= (Button) view;
+     if (btn.getText().equals(Cevap)){
+         Toast.makeText(this,"Doğru Cevap",Toast.LENGTH_SHORT).show();
+      BastanBasla();
+     }
+     else{
+         Toast.makeText(this,"Yanlış Cevap doğrusu " +Cevap +" olmalıydı",Toast.LENGTH_SHORT).show();
+     }
 
+
+ }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +165,7 @@ public void BastanBasla() throws ExecutionException, InterruptedException {
        btn1 =(Button) findViewById(R.id.btn1);
         btn2 =(Button) findViewById(R.id.btn2);
         btn3 =(Button) findViewById(R.id.btn3);
-        btn4 =(Button) findViewById(R.id.btn1);
+        btn4 =(Button) findViewById(R.id.btn4);
         btns= new Button[]{btn1,btn2,btn3,btn4};
 
 
