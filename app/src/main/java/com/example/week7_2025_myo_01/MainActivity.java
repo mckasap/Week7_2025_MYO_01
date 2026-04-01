@@ -17,6 +17,9 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
+  String imgSrc[]= new String[120];
+  String authorName[]= new String[120];
+
 
    public class myTask implements Runnable {
 
@@ -30,11 +33,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Sonuc", doc.title());
                Log.d("Sonuc",""+imgs.size());
                Log.d("Sonuc",""+spans.size());
-               for (int i=0;i<imgs.size();i++){
-                   Log.d("Sonuc",spans.get(i).text() +" "+imgs.get(i).attr("src") );
-
+               for (int i=0;i<imgs.size()*10;i++){
+                   Log.d("Sonuc",spans.get(i%12).text() +" "+imgs.get(i%12).attr("src") );
+                   authorName[i]=spans.get(i%12).text();
+                   imgSrc[i]=imgs.get(i%12).attr("src");
                }
-
+               Log.d("Sonuc", doc.title());
            } catch (IOException e) {
                throw new RuntimeException(e);
            }
@@ -43,6 +47,15 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+   class
+
+
+
+
+public void BastanBasla(){
+
+
+}
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,5 +77,6 @@ public class MainActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
 
+        BastanBasla();
     }
 }
