@@ -1,7 +1,12 @@
 package com.example.week7_2025_myo_01;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +19,14 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.Random;
+import java.util.concurrent.ExecutionException;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,15 +60,67 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-   class
+   class myImageDownloader extends AsyncTask<String,Void, Bitmap> {
+
+
+       @Override
+       protected Bitmap doInBackground(String... strings) {
+
+           try {
+               URL src= new URL(strings[0]);
+               HttpsURLConnection conn= (HttpsURLConnection) src.openConnection();
+               conn.setRequestMethod("GET");
+               conn.connect();
+               InputStream is=conn.getInputStream();
+               Bitmap bitmap= BitmapFactory.decodeStream(is);
+               return bitmap;
+
+
+           } catch (MalformedURLException e) {
+               throw new RuntimeException(e);
+           } catch (ProtocolException e) {
+               throw new RuntimeException(e);
+           } catch (IOException e) {
+               throw new RuntimeException(e);
+           }
+
+
+           //return null;
+       }
+   }
 
 
 
 
-public void BastanBasla(){
+
+
+public void BastanBasla() throws ExecutionException, InterruptedException {
+    Random rnd= new Random();
+    int randomIndex=rnd.nextInt(120);
+
+    myImageDownloader myImageDownloader= new myImageDownloader();
+    Bitmap bitmap=myImageDownloader.execute(imgSrc[randomIndex]).get();
+    ImageView imageView=findViewById(R.id.imageView);
+    imageView.setImageBitmap(bitmap);
+
+    btns[0].setText(authorName[randomIndex]);
+    btns[1].setText(authorName[randomIndex]);
+    btns[2].setText(authorName[randomIndex]);
+    btns[3].setText(authorName[randomIndex]);
+
+
 
 
 }
+
+    Button btn1;
+    Button btn2;
+    Button btn3;
+    Button btn4;
+    Button[] btns;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,17 +131,25 @@ public void BastanBasla(){
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+       btn1 =(Button) findViewById(R.id.btn1);
+        btn2 =(Button) findViewById(R.id.btn2);
+        btn3 =(Button) findViewById(R.id.btn3);
+        btn4 =(Button) findViewById(R.id.btn1);
+        btns= new Button[]{btn1,btn2,btn3,btn4};
+
 
        Thread t = new Thread( new myTask());
        t.start();
         try {
             t.join();
-
+            BastanBasla();
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
 
-        BastanBasla();
+
     }
 }
